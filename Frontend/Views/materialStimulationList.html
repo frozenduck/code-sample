@@ -1,0 +1,114 @@
+﻿<section class="personal-data" data-ui-edit-table="1">
+    <div class="row bb-none">
+        <h3 class="title-view">Материальная помощь</h3>
+    </div>
+    <span ng-notification=""></span>
+
+    <div class="row buttons bd_off" data-ng-if-has-claim="personaldata/personalfile/temporarily-vacant/command/edit">
+        <button class="btn btn-default" data-ng-disabled="!canAdd()" data-ng-click="add();"><span class="custom-icon-plus"></span>Добавить</button>
+        <button class="btn btn-default" data-ng-disabled="!canEdit()" data-ng-click="edit();"><span class="custom-icon-edit"></span>Редактировать</button>
+        <button class="btn btn-default" data-ng-disabled="!canRemove()" data-ng-click="remove();"><span class="custom-icon-remove"></span>Удалить</button>
+    </div>
+    <table class="table table-hover" data-ng-show="model.length > 0 || editModel !== null">
+        <thead>
+            <tr>
+                <th class="text-center"></th>
+                <th class="text-center">Тип денежного содержания</th>
+                <th class="text-center">Значение</th>
+                <th class="text-center">Дата с</th>
+                <th class="text-center">Дата по</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-edit-row data-ng-show="editModel !== null" class="top-line">
+                <td colspan="5" class="stack">
+
+                    <span class="mb_20_reverse" ng-validation-summary="" ng-model="errors" ng-close-click="clearErrors()" ng-title="Не удалось сохранить данные:"></span>
+
+                    <form ng-form-errors="errors">
+                        <div class="work-experience-edit">
+                            <div class="row form-group">
+                                <div class="col-xs-3">
+                                    <span class="personal-data-label">Тип денежного содержания </span><span class="text-red">*</span>
+                                </div>
+                                <div class="col-xs-8">
+                                    <input type="hidden" ui-select2="salaryTypeSelect2" ng-model="editModel.salaryType" id="salaryType" class="form-control" />
+                                    <span ng-validation-for="salaryType"></span>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-xs-3">
+                                    <span class="personal-data-label">Значение</span>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div>
+                                        <input name="value" type="text" ng-model="editModel.value" class="form-control" ng-mask='fractional' />
+                                    </div>
+                                    <span ng-validation-for="value"></span>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-xs-3">
+                                    <label for="startDate" class="personal-data-label">Дата с&nbsp;<span class="required-star">*</span></label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input id="dateStart" ng-date-picker="{icons:{date:'custom-icon-cal'}}" type="hidden" ng-model="editModel.dateStart" />
+                                    <span ng-validation-for="dateStart"></span>
+                                </div>
+                                <div class="col-xs-1">
+                                    <label for="dateEnd" class="personal-data-label">по&nbsp;</label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input id="dateEnd" ng-date-picker="{icons:{date:'custom-icon-cal'}}" type="hidden" ng-model="editModel.dateEnd" />
+                                    <span ng-validation-for="dateEnd"></span>
+                                </div>
+                           </div>
+
+                            <div class="row form-group">
+                                <div class="col-xs-4">
+                                    <label class="personal-data-label">Ознакомление с приказом</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    <label>
+                                        <input class="mr_5" ng-model="editModel.mustBeNotify" type="checkbox">
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="row form-group">
+                                <div class="col-xs-12 text-right">
+                                    <button data-item-complete class="btn btn-default btn-save" ng-click="save();">Сохранить</button>
+                                    <button data-item-complete class="btn btn-default btn-cancel ml_10" ng-click="cancel();">Отмена</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+
+            <tr ng-repeat="item in model">
+                <td>
+                    <input type="radio" ng-checked="current === item" ng-click="select(item);" />
+                </td>
+                <td>{{item.salaryType.name}}</td>
+                <td style="text-align: right;">{{item.value | currency:'' | comma2decimal}}</td>
+                <td class="text-center">{{item.dateStart | date:'dd.MM.yyyy'}}</td>
+                <td class="text-center">{{item.dateEnd | date:'dd.MM.yyyy'}}</td>
+            </tr>
+        
+            <tr>
+                <td></td>
+                <td>Итого, руб.</td>
+                <td style="text-align: right;">{{total | currency:'' | comma2decimal}}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="no-data" data-ng-show="model.length === 0 && editModel === null">Нет данных</p>
+
+</section>
