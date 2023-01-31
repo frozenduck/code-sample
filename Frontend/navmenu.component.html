@@ -1,0 +1,333 @@
+<div #cnt class="navmenu-header cnt-row" style="align-items: center">
+
+    <div [width]="10"></div>
+    <tab-link #settingsLink
+              [ngClass]="{'hiddenCls': !settingsTabVisible}"
+              path="settings"
+              [beforeSelect]="beforeSettingsSelect.bind(this)"
+              [tabTitle]="settingsTabTitle"
+              (activate)="settingsClick($event)"
+              style="vertical-align: middle" defImgCls="settingsTabImgCls"
+              hoverImgCls="settingsTabImgCls-hover"
+              activeImgCls="settingsTabImgCls-active"
+              [testId]="'settingsTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, settingsLink)">
+    </tab-link>
+    <div [width]="40"></div>
+    <tab-link #dashLink
+              [ngClass]="{'hiddenCls': !dashboardTabVisible}"
+              path="content/dashboard"
+              title="View Dashboard"
+              [tabTitle]="dashboardTabTitle"
+              (activate)="dashBoardClick($event)"
+              style="vertical-align: middle"
+              defImgCls="dashboardTabImgCls"
+              hoverImgCls="dashboardTabImgCls-hover"
+              activeImgCls="dashboardTabImgCls-active"
+              [testId]="'dashboardTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, dashLink)">
+    </tab-link>
+    <div [width]="40"></div>
+    <tab-link #rep
+              [ngClass]="{'hiddenCls': !reportsTabVisible}"
+              path="content/reports"
+              [beforeSelect]="beforeReportsSelect.bind(this)"
+              title="View Reports"
+              [tabTitle]="reportsTabTitle"
+              (activate)="reportsClick($event)"
+              style="vertical-align: middle" defImgCls="reportsTabImgCls"
+              hoverImgCls="reportsTabImgCls-hover"
+              activeImgCls="reportsTabImgCls-active"
+              [testId]="'reportsTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, rep)">
+    </tab-link>
+    <div [width]="40"></div>
+    <tab-link #timelineBtn
+              [ngClass]="{'hiddenCls': !timelineTabVisible}"
+              path="content/timeline"
+              [beforeSelect]="beforeTimelineSelect.bind(this)"
+              title="View Timeline" [tabTitle]="timelineTabTitle"
+              (activate)="timeLineClick($event)"
+              style="vertical-align: middle"
+              defImgCls="timelineTabImgCls"
+              hoverImgCls="timelineTabImgCls-hover"
+              activeImgCls="timelineTabImgCls-active"
+              [testId]="'timelineTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, timelineBtn)">
+    </tab-link>
+    <div *ngIf="actualsTabVisible" [width]="40"></div>
+    <tab-link #actualsBtn
+              [ngClass]="{'hiddenCls': !actualsTabVisible}"
+              path="content/actuals"
+              [beforeSelect]="beforeActualsSelect"
+              title="View Actuals"
+              [tabTitle]="actualsTabTitle"
+              (activate)="actualsClick($event)"
+              style="vertical-align: middle"
+              defImgCls="actualsTabImgCls"
+              hoverImgCls="actualsTabImgCls-hover"
+              activeImgCls="actualsTabImgCls-active"
+              [testId]="'actualsTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, actualsBtn)">
+    </tab-link>
+    <div *ngIf="xeroTabVisible" [width]="40"></div>
+    <tab-link #xeroBtn
+              [ngClass]="{'hiddenCls': !xeroTabVisible}"
+              path="content/xero"
+              [beforeSelect]="beforeXeroSelect"
+              title="View Xero"
+              [tabTitle]="xeroTabTitle"
+              (activate)="xeroClick($event)"
+              style="vertical-align: middle"
+              defImgCls=""
+              hoverImgCls=""
+              activeImgCls=""
+              [isXeroBtn]="true"
+              [testId]="'xeroTabBtn'"
+              [onSelect]="linkOnSelect.bind(this, xeroBtn)">
+    </tab-link>
+    <div class="left-padding" [width]="20"></div>
+    <div style="flex: 1;align-items: center" class="cnt-row"> <div #planText class="planNameCls h3Font nonselectable curtailableText" style="position: absolute" data-testid="planName" [innerHtml]="planName | safeHtml"></div></div>
+
+    <ng-container *ngIf="authData && !authData.isViewHistoryMode">
+
+        <ng-container *ngIf="itemCounterVisible">
+            <div><span [ngClass]="itemCount >= itemCriticalLimit ? 'p2Font redColor': 'p2Font g3Color'" data-testid="itmCounter">{{itemCount}}/{{itemCountLimit}}</span></div>
+        </ng-container>
+
+        <div [width]="5">
+
+        </div>
+        <div (click)="testError()" class="btnref h5Font bold g4Color" *ngIf="IsTestButtonsVisible">
+            Test
+        </div>
+        <div [width]="5" *ngIf="IsTestButtonsVisible">
+
+        </div>
+
+
+        <div class="btnref h5Font bold g4Color" *ngIf="isDownloadPlanActive" (click)="onDownloadPlan()">
+            DOWNLOAD PLAN
+        </div>
+
+        <div [width]="5" *ngIf="!isLoggedIn"></div>
+
+        <simple-btn *ngIf="!isLoggedIn"
+                [horizontalPadding]="20"
+                [hoverTextColor]="'white'"
+                [text]="'Start your own plan'"
+                [fontWeight]="'700'"
+                [backgroundFillCls]="'o2Background'"
+                [hoverFillCls]="'o1Background'"
+                [boxShadowCls]="'primary-shadow'"
+                (click)="handleSignUpClick()"
+                data-testid="amSignUp"
+                [textCls]="'small-btn-text'"
+                [height]="30"
+                [cornerRadius]="50">
+        </simple-btn>
+
+        <div [width]="5" *ngIf="isLoggedIn && PlanData && PlanData.planTourActive"></div>
+
+        <simple-btn *ngIf="isLoggedIn && PlanData && PlanData.planTourActive && !isReadonly && packageType"
+                [width]="82" 
+                [disabled]="!canCreateNewPlan"
+                [hoverTextColor]="'white'"
+                [text]="'New plan'"
+                [backgroundFillCls]="'o2Background'"
+                [hoverFillCls]="'o1Background'"
+                [boxShadowCls]="'primary-shadow'"
+                [fontWeight]="'700'"
+                (click)="onOpenNewPlan()"
+                data-testid="newPlan"
+                [textCls]="'small-btn-text'"
+                [height]="30"
+                [cornerRadius]="50"
+                [horizontalPadding]="20">
+        </simple-btn>
+
+        <div [width]="5">
+
+        </div>
+
+        <ng-container *ngIf="licenseStatus === 'Trial' && showTrialTimer">
+            <trial-timer [authData]="authData"
+                         [showUpgradeBtn]="showTrialTimerUpgradeBtn"
+                         (upgrade)="onUpgrade()">
+            </trial-timer>
+            <div [width]="10"></div>
+        </ng-container>
+
+        <ng-container *ngIf="authData && authData.level < 2 && licenseStatus">
+            <ng-container *ngIf="showUpgradeToEdit">
+                <div class="upgrade-to-edit-text h4Font"
+                     (click)="handleUpgradeClick()"
+                     data-testid="upgradeToEditText">
+                    Upgrade to edit this plan
+                </div>
+                <div [width]="5"></div>
+            </ng-container>
+
+            <simple-btn [width]="110"
+                    [textCls]="'small-btn-text'"
+                    [height]="30"
+                    [cornerRadius]="50"
+                    [horizontalPadding]="20"
+                    [backgroundFillCls]="'o2Background'"
+                    [hoverFillCls]="'o1Background'"
+                    [boxShadowCls]="'primary-shadow'"
+                    [text]="'Upgrade'"
+                    [rightImgCls]="'trial-timer-star-img'"
+                    (click)="handleUpgradeClick()"
+                    data-testid="trialTimerUpgradeBtn">
+            </simple-btn>
+            <div [width]="10"></div>
+        </ng-container>
+
+        <ng-container *ngIf="authData && authData.isAuthenticated && PlanData && !PlanData.planTourActive">
+
+            <simple-btn #shareButton
+                 [ngClass]="{'hiddenCls': !shareButtonVisible}"
+                 [width]="80"
+                 [height]="30"
+                 [cornerRadius]="20"
+                 [backgroundFillCls]="'account-logo-color'"
+                 [hoverFillCls]="'account-logo-hover'"
+                 [textColorCls]="'g4Color'"
+                 [hoverTextColorCls]="'white-color'"
+                 [text]="'Share'"
+                 [rightImgCls]="'add-shared'"
+                 [rightImgHoverCls]="'add-shared-hover'"
+                 [rightSpace]="5"
+                 (click)="handleInviteClick()"
+                 (mouseenter)="onShareBtnMouseEnter()"
+                 (mouseleave)="onShareBtnMouseLeave()"
+                 data-testid="sharePlanBtn">
+            </simple-btn>
+            <div [width]="10"></div>
+
+            <online-indicator [ngClass]="{'hiddenCls': !shareButtonVisible}"
+                              [visible]="shareButtonVisible"
+                              [anchorElement]="shareButtonElement">
+            </online-indicator>
+
+            <invited-users-tooltip #invitedUsersTooltip
+                                   [anchorElement]="shareButtonElement"
+                                   [visible]="invitedUsersTooltipVisible">
+            </invited-users-tooltip>
+
+            <div [width]="10" [ngClass]="{'hiddenCls': shareButtonVisible || invitedUsersTooltipVisible}"></div>
+
+        </ng-container>
+
+        <ng-container *ngIf="authData && authData.isAuthenticated">
+            <simple-btn #downloadButton
+                 [width]="30"
+                 [height]="30"
+                 [cornerRadius]="20"
+                 [backgroundFillCls]="'account-logo-color'"
+                 [hoverFillCls]="'account-logo-hover'"
+                 [textColorCls]="'g4Color'"
+                 [hoverTextColor]="'white'"
+                 [text]="''"
+                 [rightImgCls]="'download-button'"
+                 [rightImgHoverCls]="'download-button-hover'"
+                 [rightSpace]="0"
+                 (click)="handleDownloadClick()"
+                 [tooltip]="'Download document'"
+                 data-testid="downloadButton">
+            </simple-btn>
+            <div [width]="10"></div>
+        </ng-container>
+
+        <ng-container *ngIf="authData && authData.isAuthenticated && PlanData && !PlanData.planTourActive">
+            <simple-btn #versionBtn
+                 [ngClass]="{'hiddenCls': !shareButtonVisible}"
+                 [width]="30"
+                 [height]="30"
+                 [cornerRadius]="20"
+                 [backgroundFillCls]="'account-logo-color'"
+                 [hoverFillCls]="'account-logo-hover'"
+                 [textColorCls]="'g4Color'"
+                 [hoverTextColor]="'white'"
+                 [text]="''"
+                 [rightImgCls]="'version-history'"
+                 [rightImgHoverCls]="'version-history-hover'"
+                 [rightSpace]="0"
+                 (click)="versionHistoryClick()"
+                 [tooltip]="'Version history'"
+                 data-testid="versionHistoryBtn">
+            </simple-btn>
+            <div [width]="10"></div>
+        </ng-container>
+
+
+        <simple-btn [width]="30"
+             [height]="30"
+             [cornerRadius]="20"
+             [backgroundFillCls]="'account-logo-color'"
+             [hoverFillCls]="'account-logo-hover'"
+             [textColorCls]="'g4Color'"
+             [hoverTextColorCls]="'g3Color'"
+             textCls="h2Font"
+             [text]="'?'"
+             [rightSpace]="0"
+             (click)="helpClick()"
+             [tooltip]="'Go to help area'">
+        </simple-btn>
+
+        <div [width]="10"></div>
+
+        <upperDropDownMenu #upperMenu
+                           *ngIf="authData && isDropDownShown"
+                           [authData]="authData"                           
+                           [toggleMenuCallBack]="handleToggleAccountMenu"
+                           (upgrade)="onUpgrade()"
+                           (peopleClick)="onPeopleClick()"
+                           (newPlanOpen)="onOpenNewPlan()">
+        </upperDropDownMenu>
+
+        <div [width]="10">
+
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="authData && authData.isViewHistoryMode">
+
+        <simple-btn [horizontalPadding]="20"
+                [textCls]="'small-btn-text'"
+                [height]="30"
+                [cornerRadius]="50"
+                [backgroundFillCls]="'o2Background'"
+                [hoverFillCls]="'o1Background'"
+                [boxShadowCls]="'primary-shadow'"
+                [text]="'Restore this version'"
+                (click)="restoreVersionClick()"
+                data-testid="restoreVersionBtn">
+        </simple-btn>
+
+        <div [width]="10"></div>
+
+        <simple-btn [horizontalPadding]="20"
+                [textCls]="'small-btn-text'"
+                [height]="30"
+                [cornerRadius]="50"
+                [rightImgCls]="'version-history-list'"
+                [rightImgHoverCls]="'version-history-list-hover'"
+                text="Version list"
+                (click)="backToLatestVersionClick(true)"
+                [backgroundFillCls]="'transparent-background'"
+                [hoverFillCls]="'g4Background'"
+                [borderWidth]=2
+                [borderColorCls]="'g4Border'"
+                [hoverBorderColorCls]="'g4Border'"
+                [textColorCls]="'g4Color'"
+                [hoverTextColorCls]="'white-color'"
+                data-testid="backToLatestVersionBtn">
+
+        </simple-btn>
+
+        <div [width]="10"></div>
+    </ng-container>
+</div>
+

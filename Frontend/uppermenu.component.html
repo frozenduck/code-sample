@@ -1,0 +1,114 @@
+﻿<div *ngIf="licenseStatus != 'Full' && spareLicensesCount2 > 0" class="header cnt-row b3Background" style="align-items: center; border-bottom: #333f53 1px solid; color: white; height: auto;">
+    <div style="margin: auto; text-align: center; padding: 10px;" class="p1Font">
+        <ng-container *ngIf="spareLicensesCount2 > 0">
+            You have <b>{{spareLicensesCount2}}</b> existing licences. Assign them to a <a (click)="onNewCompanyClick($event)">new organisation</a> or an organisation without a licence.<br>
+        </ng-container>
+    </div>
+</div>
+<div class="header cnt-row b3Background" style="align-items: center">
+
+    <div class="menuspace"></div>
+    <combo name="company"
+           [showImg]="false"
+           [label]=""
+           backgroundColor="white"
+           hint="Choose organisation"
+           #companyCombo
+           [inputTextClass]="'p2Font b1Color'"
+           [ComboData]="comboItems"
+           [(ngModel)]="selectedCompanyNum"
+           (changeCaller)="onCompanyChanged($event)"
+           (newCompanyClick)="onNewCompanyClick($event)"
+           [height]="30"
+           [width]="200"
+           [isNewCompany]="true"
+           testId="companyCombo">
+    </combo>
+    <div class="menuspace"></div>
+    <div class="cnt-row" style="align-items: center; width: 100%;">
+        <tab-link-simple id="myplans" path="myplans" title="PLANS" fred="anyhow" layout="true" class="tabbtn" style="vertical-align: middle" data-testid="MyPlansTab" (activate)="onMyPlansActivate()"></tab-link-simple>
+        <div class="menuspace"></div>
+        <div *ngIf="isSelectedOwnCompany || isPeopleAndCompanyTabsVisible" class="cnt-row">
+            <tab-link-simple id="people" path="people" title="PEOPLE" class="tabbtn" data-testid="PeopleTab"></tab-link-simple>
+            <div class="menuspace"></div>
+        </div>
+        <div [ngClass]="{'hiddenCls': !isPeopleAndCompanyTabsVisible}" class="cnt-row">
+            <tab-link-simple id="company" path="company" title="ORGANISATION" class="tabbtn" data-testid="CompanyTab"></tab-link-simple>
+            <div class="menuspace"></div>
+        </div>
+        <tab-link-simple title="MY PROFILE" path="myprofile" class="tabbtn" data-testid="MyProfileTab"></tab-link-simple>
+        <ng-container [ngSwitch]="loggedUserLevel">
+            <ng-template [ngSwitchCase]="1">
+            </ng-template>
+        </ng-container>
+        <div class="menuspace"></div>
+        <tab-link-simple *ngIf="licenseVisible" title="LICENCE" class="tabbtn" data-testid="License" path="license"></tab-link-simple>
+        <div style="flex:1"></div>
+        <!-- <div [width] = "leftSpaceWidth"></div> -->
+        <ng-container *ngIf="licenseStatus === 'Trial';else packageTemplate">
+            <trial-timer [authData]="authData"
+                         (upgrade)="onUpgrade()">
+            </trial-timer>
+            <div [width]="10"></div>
+        </ng-container>
+
+        <ng-template #packageTemplate>
+            <div class="{{licenseColor}} h4Font">
+                {{getCurrentPackageName()}}
+            </div>
+            <div [width]="10"></div>
+        </ng-template>
+
+        <simple-btn *ngIf="licenseStatus == 'Full' && canUpgradeBool"
+                    [width]="upgradeBtnWidth"
+                    [hoverTextColor]="'white'"
+                    [backgroundFillCls]="'o2Background'"
+                    [hoverFillCls]="'o1Background'"
+                    [boxShadowCls]="'primary-shadow'"
+                    [text]="upgradeBtnText"
+                    [textCls]="'small-btn-text'"
+                    [height]="30"
+                    [cornerRadius]="50"
+                    [horizontalPadding]="20"
+                    [rightImgCls]="'trial-timer-star-img'"
+                    (click)="handleUpgradeClick()"
+                    data-testid="purchaseBtn">
+        </simple-btn>
+        <div [width]="10"></div>
+
+        <simple-btn *ngIf="loggedUserLevel < 2 || licenseStatus == 'Trial'"
+                    [width]="130"
+                    [hoverTextColor]="'white'"
+                    [backgroundFillCls]="'o2Background'"
+                    [hoverFillCls]="'o1Background'"
+                    [boxShadowCls]="'primary-shadow'"
+                    [text]="'Purchase licence'"
+                    [textCls]="'small-btn-text'"
+                    [height]="30"
+                    [cornerRadius]="50"
+                    [horizontalPadding]="20"
+                    [rightImgCls]="'trial-timer-star-img'"
+                    (click)="handlePurchaseClick()"
+                    data-testid="purchaseBtn">
+        </simple-btn>
+        <div [width]="10"></div>
+
+        <!--   <tab-link title="SIGN OUT" class="tabbtn" data-testid="Signout" (activate)="onSignOut()"></tab-link> -->
+        <tab-link-simple *ngIf="!isDropDownShown" title="SIGN OUT" class="tabbtn" data-testid="Signout" (activate)="onSignOut()"></tab-link-simple>
+        <upperDropDownMenu #upperDropDownMenu
+                           *ngIf="authData && isDropDownShown"
+                           [authData]="authData"                           
+                           (upgrade)="onUpgrade()"
+                           (peopleClick)="onPeopleClick()"
+                           (newPlanOpen)="onOpenNewPlan()">
+
+        </upperDropDownMenu>
+        <div class="menuspace"></div>
+        <tab-link-simple title="Enterpreneur" [hidden]="true" class="tabbtn" test-id="Enterpreneur" (activate)="onSignOut()">
+
+        </tab-link-simple>
+
+    </div>
+    <div style="flex: 1"></div>
+
+</div>
